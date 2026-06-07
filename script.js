@@ -3,60 +3,47 @@ const storyPrompt = document.getElementById('storyPrompt');
 const videoWrapper = document.getElementById('videoWrapper');
 const videoPlayer = document.getElementById('videoPlayer');
 
-// Authenticated private line to skip the public queues
-const HF_TOKEN = "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"; 
+// Enterprise GPU route key
+const FAL_KEY = "A8b056c4-c5b7-4065-9cec-fcf00ad150c3:bfbc65ecff2599d7e03b3175f1ee5b17"; 
 
 generateBtn.addEventListener('click', async () => {
     const userText = storyPrompt.value.trim();
     if (!userText) return alert("Please enter a scene description first!");
 
-    generateBtn.innerText = "STAGE 1: GENERATING 3D IMAGE...";
+    generateBtn.innerText = "GENERATING CINEMATIC VIDEO...";
     generateBtn.disabled = true;
     videoWrapper.classList.add('hidden');
 
     try {
-        const styleMod = "3D character model animation frame, cinematic game engine graphics, smooth stylized lighting, 9:16 vertical composition, clean render asset";
-        const imgRes = await fetch("https://multimodalart-wan2-1-fast.hf.space/api/predict", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                ...(HF_TOKEN && { "Authorization": `Bearer ${HF_TOKEN}` })
-            },
-            body: JSON.stringify({ data: [`${userText}, ${styleMod}`, "9:16", Math.floor(Math.random() * 100000)] })
-        });
+        // Advanced 3D styling prompts bundled directly into the text pipeline
+        const stylizedPrompt = `${userText}, 3D character animation frame, cinematic game engine graphics, smooth stylized lighting, 9:16 vertical composition, premium render look`;
         
-        const imgData = await imgRes.json();
-        if (!imgData.data || !imgData.data[0]) throw new Error("Image server busy");
-        const generatedStillUrl = imgData.data[0].url;
-
-        generateBtn.innerText = "STAGE 2: APPLYING SMOOTH MOTION...";
-
-        const videoRes = await fetch("https://wan-ai-wan2-1.hf.space/api/predict", {
+        const response = await fetch("https://queue.fal.run/fal-ai/wan/v2.1/text-to-video", {
             method: "POST",
-            headers: { 
+            headers: {
                 "Content-Type": "application/json",
-                ...(HF_TOKEN && { "Authorization": `Bearer ${HF_TOKEN}` })
+                "Authorization": `Key ${FAL_KEY}`
             },
             body: JSON.stringify({
-                data: [
-                    { path: generatedStillUrl },
-                    "Cinematic camera glide, subtle natural eyes blinking, lifelike smooth breathing, high frame rate animation look, flawless camera physics",
-                    10
-                ]
+                prompt: stylizedPrompt,
+                aspect_ratio: "9:16"
             })
         });
 
-        const videoData = await videoRes.json();
-        if (!videoData.data || !videoData.data[0]?.video?.url) throw new Error("Video server busy");
-        const finalVideoUrl = videoData.data[0].video.url;
-
-        videoPlayer.src = finalVideoUrl;
-        videoWrapper.classList.remove('hidden');
-        videoPlayer.load();
+        const data = await response.json();
+        
+        // Fal processes requests using an optimized queue. Let's pull the final file string.
+        if (data.video && data.video.url) {
+            videoPlayer.src = data.video.url;
+            videoWrapper.classList.remove('hidden');
+            videoPlayer.load();
+        } else {
+            throw new Error("Pipeline compilation delayed.");
+        }
 
     } catch (error) {
         console.error(error);
-        alert("The backend endpoint is currently queued. Tap generate again to re-verify the transaction pipeline!");
+        alert("System processing engine busy. Tap generate again to kickstart the visual compiler!");
     } finally {
         generateBtn.innerText = "GENERATE ANIMATION";
         generateBtn.disabled = false;
