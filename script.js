@@ -15,10 +15,10 @@ generateBtn.addEventListener('click', async () => {
     videoWrapper.classList.add('hidden');
 
     try {
-        // Advanced 3D styling prompts bundled directly into the text pipeline
         const stylizedPrompt = `${userText}, 3D character animation frame, cinematic game engine graphics, smooth stylized lighting, 9:16 vertical composition, premium render look`;
         
-        const response = await fetch("https://queue.fal.run/fal-ai/wan/v2.1/text-to-video", {
+        // Changed URL to the synchronous 'fal.run' endpoint so it waits for completion
+        const response = await fetch("https://fal.run/fal-ai/wan/v2.1/text-to-video", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -32,18 +32,22 @@ generateBtn.addEventListener('click', async () => {
 
         const data = await response.json();
         
-        // Fal processes requests using an optimized queue. Let's pull the final file string.
+        // Check if there's an error from the server first
+        if (data.detail) {
+            throw new Error(data.detail);
+        }
+
         if (data.video && data.video.url) {
             videoPlayer.src = data.video.url;
             videoWrapper.classList.remove('hidden');
             videoPlayer.load();
         } else {
-            throw new Error("Pipeline compilation delayed.");
+            throw new Error("Video payload missing from response.");
         }
 
     } catch (error) {
         console.error(error);
-        alert("System processing engine busy. Tap generate again to kickstart the visual compiler!");
+        alert(`Generation failed: ${error.message || "Check your Fal.ai dashboard balance or logs!"}`);
     } finally {
         generateBtn.innerText = "GENERATE ANIMATION";
         generateBtn.disabled = false;
