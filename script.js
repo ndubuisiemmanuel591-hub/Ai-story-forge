@@ -7,42 +7,31 @@ generateBtn.addEventListener('click', async () => {
     const userText = storyPrompt.value.trim();
     if (!userText) return alert("Please enter a scene description first!");
 
-    generateBtn.innerText = "GENERATING CINEMATIC VIDEO...";
+    generateBtn.innerText = "COMPILING 3D VIDEO STREAM...";
     generateBtn.disabled = true;
     videoWrapper.classList.add('hidden');
 
     try {
-        const stylizedPrompt = `${userText}, 3D character animation frame, cinematic game engine graphics, smooth stylized lighting, 9:16 vertical composition, premium render look`;
+        // Encoding the prompt text cleanly to prevent web link breakages
+        const cleanPrompt = encodeURIComponent(`${userText}, 3D character animation, cinematic lighting, 9:16 portrait composition, high fidelity render`);
         
-        // Using the direct web-friendly open client interface
-        const response = await fetch("https://client.fal.run/fal-ai/wan/v2.1/text-to-video", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                prompt: stylizedPrompt,
-                aspect_ratio: "9:16"
-            })
-        });
+        // Public open-access video engine route (Zero Auth Keys Required)
+        const videoUrl = `https://text-to-video.pollinations.ai/${cleanPrompt}`;
 
-        const data = await response.json();
+        // Verify the stream is active by pinging the link header
+        const checkStream = await fetch(videoUrl, { method: 'HEAD' });
         
-        if (data.detail) {
-            throw new Error(data.detail);
-        }
-
-        if (data.video && data.video.url) {
-            videoPlayer.src = data.video.url;
+        if (checkStream.ok) {
+            videoPlayer.src = videoUrl;
             videoWrapper.classList.remove('hidden');
             videoPlayer.load();
         } else {
-            throw new Error("Video asset generation still processing.");
+            throw new Error("Cluster compilation taking longer than expected.");
         }
 
     } catch (error) {
         console.error(error);
-        alert(`Engine Status: ${error.message || "Server taking too long. Tap generate again to wake it up!"}`);
+        alert("The public AI cluster is processing. Tap generate again to re-verify the animation stream!");
     } finally {
         generateBtn.innerText = "GENERATE ANIMATION";
         generateBtn.disabled = false;
