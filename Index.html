@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Story Forge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4 font-sans selection:bg-zinc-800">
+
+    <div class="w-full max-w-sm text-center space-y-6">
+        <div>
+          <h1 class="text-2xl font-black tracking-widest text-white">AI STORY FORGE</h1>
+          <p class="text-zinc-500 text-xs mt-1 uppercase tracking-wider">Premium 3D Production Studio</p>
+        </div>
+
+        <div class="flex flex-col text-left space-y-2">
+          <label class="text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Scene Prompt Description</label>
+          <textarea 
+            id="storyPrompt"
+            class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 h-28 text-sm text-white focus:outline-none focus:border-zinc-600 transition resize-none"
+            placeholder="Describe your scene context (e.g., A guy in a sleek jacket looking out of a rain-slicked window)..."
+          ></textarea>
+          
+          <button 
+            id="generateBtn"
+            class="bg-white text-black font-black p-4 rounded-xl text-sm tracking-wider active:scale-95 transition disabled:opacity-40"
+          >
+            GENERATE ANIMATION
+          </button>
+        </div>
+
+        <div id="videoWrapper" class="hidden pt-2 space-y-2">
+          <div class="w-[280px] h-[497px] mx-auto rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl">
+            <video id="videoPlayer" controls autoplay loop class="w-full h-full object-cover"></video>
+          </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
