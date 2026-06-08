@@ -1,21 +1,39 @@
-<div id="studio-dashboard">
-    <!-- Character Section -->
-    <section class="control-group">
-        <h3>1. Design Character</h3>
-        <textarea id="charPrompt" placeholder="e.g., A young boy in a sharp black suit, short hair, clean look"></textarea>
-    </section>
-
-    <!-- Environment Section -->
-    <section class="control-group">
-        <h3>2. Set Environment</h3>
-        <textarea id="envPrompt" placeholder="e.g., A luxury office building, golden hour lighting, soft background blur"></textarea>
-    </section>
-
-    <!-- Action Section -->
-    <section class="control-group">
-        <h3>3. Direct Action & Camera</h3>
-        <textarea id="actionPrompt" placeholder="e.g., Walking slowly toward the window, cinematic slow dolly-in"></textarea>
-    </section>
-
-    <button id="generateBtn">GENERATE CINEMATIC VIDEO</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>STORY FORGE PRO | CINEMATIC STUDIO</title>
+    <style>
+        :root { --accent: #6366f1; --bg: #0a0a0c; --panel: #16161a; }
+        body { background: var(--bg); color: #e0e0e0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; padding: 40px; }
+        .studio-grid { display: grid; grid-template-columns: 350px 1fr; gap: 30px; width: 100%; max-width: 1000px; }
+        .panel { background: var(--panel); padding: 25px; border-radius: 20px; border: 1px solid #2d2d3a; }
+        h1 { color: var(--accent); font-size: 1.2rem; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
+        textarea, select { width: 100%; background: #25252d; border: 1px solid #3d3d4e; color: white; border-radius: 8px; padding: 10px; margin-top: 5px; }
+        button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        #videoPlayer { width: 100%; border-radius: 15px; background: #000; }
+    </style>
+</head>
+<body>
+    <div class="studio-grid">
+        <div class="panel">
+            <h1>PRODUCTION SETTINGS</h1>
+            <div class="input-group"><label>Character Profile</label><textarea id="char" placeholder="Describe character..."></textarea></div>
+            <div class="input-group"><label>Environment/World</label><textarea id="env" placeholder="Describe world..."></textarea></div>
+            <div class="input-group"><label>Camera Dynamics</label>
+                <select id="motion">
+                    <option value="cinematic zoom">Zoom</option>
+                    <option value="dolly shot">Dolly</option>
+                    <option value="panoramic swipe">Pan</option>
+                </select>
+            </div>
+            <button id="generateBtn">RENDER SCENE</button>
+        </div>
+        <div class="panel">
+            <h1>PREVIEW MONITOR</h1>
+            <video id="videoPlayer" controls></video>
+        </div>
+    </div>
+</body>
+</html>
